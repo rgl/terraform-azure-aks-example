@@ -100,6 +100,11 @@ resource "azurerm_kubernetes_cluster" "example" {
   name                = "example"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
+  # NB the default is MC_<resource_group_name>_<location> which is harder to see
+  #    in the portal when we sort the resources by name.
+  #    e.g. MC_rgl-aks-example_example_francecentral
+  # NB this resource group is automatically created and must not already exist.
+  node_resource_group = "${azurerm_resource_group.example.name}-node"
 
   dns_prefix         = "example"
   kubernetes_version = "1.17.3"
