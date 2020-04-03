@@ -19,7 +19,6 @@ terraform-apply: shared/service-principal.json ~/.ssh/id_rsa
 	terraform output kube_config >shared/kube.conf
 	KUBECONFIG=shared/kube.conf kubectl cluster-info
 	KUBECONFIG=shared/kube.conf kubectl get nodes -o wide
-	KUBECONFIG=shared/kube.conf kubectl get pods -o wide --all-namespaces
 
 terraform-destroy:
 	CHECKPOINT_DISABLE=1 \

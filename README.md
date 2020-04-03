@@ -41,6 +41,16 @@ Launch the example:
 make terraform-apply
 ```
 
+See some information about the cluster:
+
+```bash
+export KUBECONFIG=$PWD/shared/kube.conf
+kubectl cluster-info
+kubectl get nodes -o wide
+kubectl get pods -o wide --all-namespaces
+kubectl get storageclass
+```
+
 ## Kubernetes Dashboard
 
 Launch the kubernetes API server proxy in background:
@@ -91,6 +101,8 @@ Then access the kubernetes dashboard at:
     http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
 
 Then select `Token` and use the contents of `shared/kube-admin-token.txt` as the token.
+
+Alternatively you could [assign the cluster-admin role to the kubernetes-dashboard service account](https://docs.microsoft.com/en-us/azure/aks/kubernetes-dashboard), but by creating an account for you, you only grant it that access when you are using the dashboard.
 
 # Reference
 
