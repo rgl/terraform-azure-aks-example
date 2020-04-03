@@ -26,6 +26,8 @@ terraform-destroy:
 	TF_LOG=TRACE \
 	TF_LOG_PATH=terraform.log \
 	TF_VAR_admin_ssh_key_data="$(shell cat ~/.ssh/id_rsa.pub)" \
+	TF_VAR_service_principal_client_id="$(shell jq -r .appId shared/service-principal.json)" \
+	TF_VAR_service_principal_client_secret="$(shell jq -r .password shared/service-principal.json)" \
 	time terraform destroy
 
 shared/service-principal.json:
