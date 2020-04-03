@@ -95,4 +95,6 @@ Then select `Token` and use the contents of `shared/kube-admin-token.txt` as the
 # Reference
 
 * https://docs.microsoft.com/en-us/azure/aks/
+* https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks
+* https://azure.microsoft.com/en-us/pricing/details/monitor/
 * https://github.com/terraform-providers/terraform-provider-azurerm/tree/master/examples/kubernetes

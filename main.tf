@@ -63,6 +63,37 @@ resource "azurerm_resource_group" "example" {
   tags     = var.tags
 }
 
+# NB this generates a single random number for the resource group.
+resource "random_id" "log_analytics" {
+  keepers = {
+    resource_group = azurerm_resource_group.example.name
+  }
+  byte_length = 16
+}
+
+resource "azurerm_log_analytics_workspace" "example" {
+  # NB this name must be globally unique as all the azure accounts share the same namespace.
+  # NB this name must be 4-63 characters long.
+  name                = "la${random_id.log_analytics.hex}"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  sku                 = "PerGB2018"
+  retention_in_days   = 31
+}
+
+resource "azurerm_log_analytics_solution" "example" {
+  solution_name         = "ContainerInsights"
+  location              = azurerm_resource_group.example.location
+  resource_group_name   = azurerm_resource_group.example.name
+  workspace_resource_id = azurerm_log_analytics_workspace.example.id
+  workspace_name        = azurerm_log_analytics_workspace.example.name
+
+  plan {
+    publisher = "Microsoft"
+    product   = "OMSGallery/ContainerInsights"
+  }
+}
+
 # see https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html
 # see https://docs.microsoft.com/en-us/azure/aks/
 resource "azurerm_kubernetes_cluster" "example" {
@@ -91,6 +122,12 @@ resource "azurerm_kubernetes_cluster" "example" {
   addon_profile {
     kube_dashboard {
       enabled = true
+    }
+
+    # see https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-onboard
+    oms_agent {
+      enabled                    = true
+      log_analytics_workspace_id = azurerm_log_analytics_workspace.example.id
     }
   }
 
