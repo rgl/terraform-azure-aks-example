@@ -116,6 +116,11 @@ resource "azurerm_kubernetes_cluster" "example" {
     node_count      = 1
   }
 
+  network_profile {
+    network_plugin    = "kubenet"
+    load_balancer_sku = "Standard"
+  }
+
   linux_profile {
     admin_username = var.admin_username
 
