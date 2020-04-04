@@ -106,6 +106,11 @@ resource "azurerm_kubernetes_cluster" "example" {
   # NB this resource group is automatically created and must not already exist.
   node_resource_group = "${azurerm_resource_group.example.name}-node"
 
+  # NB dns_prefix will be used in the k8s api server public address as defined
+  #    by the following pattern:
+  #       https://<dns_prefix>-<random>.hcp.<location>.azmk8s.io
+  #    for example:
+  #       https://example-87d0a6ab.hcp.francecentral.azmk8s.io
   dns_prefix         = "example"
   kubernetes_version = "1.17.3"
 
