@@ -1,11 +1,11 @@
 # see https://github.com/hashicorp/terraform
 terraform {
-  required_version = ">= 0.12"
+  required_version = "~> 0.12.24"
 }
 
 # see https://github.com/terraform-providers/terraform-provider-azurerm
 provider "azurerm" {
-  version = "~> 2.3"
+  version = "~> 2.4.0"
   features {}
 }
 
