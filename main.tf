@@ -127,8 +127,11 @@ resource "azurerm_kubernetes_cluster" "example" {
   }
 
   linux_profile {
+    # to ssh into the managed worker nodes see:
+    #   https://unofficialism.info/posts/easy-way-ssh-into-aks-cluster-node/
+    #   https://github.com/yokawasa/kubectl-plugin-ssh-jump
+    #   https://docs.microsoft.com/en-us/azure/aks/ssh
     admin_username = var.admin_username
-
     ssh_key {
       key_data = var.admin_ssh_key_data
     }
