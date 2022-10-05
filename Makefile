@@ -36,4 +36,7 @@ shared/service-principal.json:
 ~/.ssh/id_rsa:
 	ssh-keygen -f $@ -t rsa -b 2048 -C "$$USER@$$(hostname --fqdn)" -N ''
 
-.PHONY: terraform-init terraform-apply terraform-destroy
+clean:
+	rm -rf shared tmp *.log
+
+.PHONY: all clean terraform-init terraform-apply terraform-destroy

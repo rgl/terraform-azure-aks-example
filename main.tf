@@ -8,11 +8,29 @@ terraform {
       source  = "hashicorp/random"
       version = "3.4.3"
     }
+    # see https://github.com/hashicorp/terraform-provider-time
+    # see https://registry.terraform.io/providers/hashicorp/time
+    time = {
+      source  = "hashicorp/time"
+      version = "0.8.0"
+    }
+    # see https://github.com/terraform-providers/terraform-provider-azuread
+    # see https://registry.terraform.io/providers/hashicorp/azuread
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = "2.29.0"
+    }
     # see https://github.com/terraform-providers/terraform-provider-azurerm
     # see https://registry.terraform.io/providers/hashicorp/azurerm
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "3.25.0"
+    }
+    # see https://github.com/terraform-providers/terraform-provider-kubernetes
+    # see https://registry.terraform.io/providers/hashicorp/kubernetes
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.13.1"
     }
     # see https://github.com/terraform-providers/terraform-provider-helm
     # see https://registry.terraform.io/providers/hashicorp/helm
@@ -38,6 +56,12 @@ provider "helm" {
   }
 }
 
+data "azuread_client_config" "current" {
+}
+
+data "azurerm_client_config" "current" {
+}
+
 # NB you can test the relative speed from you browser to a location using https://azurespeedtest.azurewebsites.net/
 # get the available locations with: az account list-locations --output table
 variable "location" {
@@ -56,6 +80,14 @@ variable "tags" {
   default = {
     owner = "rgl"
   }
+}
+
+variable "dns_zone" {
+  default = "example.com"
+}
+
+variable "letsencrypt_email" {
+  default = "john.doe@example.com"
 }
 
 variable "admin_username" {
@@ -87,6 +119,14 @@ variable "k8s_version" {
   default = "1.24.3"
 }
 
+output "dns_zone" {
+  value = var.dns_zone
+}
+
+output "dns_zone_name_servers" {
+  value = azurerm_dns_zone.ingress.name_servers
+}
+
 output "kube_config" {
   sensitive = true
   value     = azurerm_kubernetes_cluster.example.kube_config_raw
@@ -96,6 +136,12 @@ resource "azurerm_resource_group" "example" {
   name     = var.resource_group_name # NB this name must be unique within the Azure subscription.
   location = var.location
   tags     = var.tags
+}
+
+# see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_zone
+resource "azurerm_dns_zone" "ingress" {
+  resource_group_name = azurerm_resource_group.example.name
+  name                = var.dns_zone
 }
 
 # NB this generates a single random number for the resource group.

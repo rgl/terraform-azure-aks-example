@@ -1,5 +1,6 @@
 .vagrant/
 .terraform/
 terraform*
+*.tfstate*
 shared/
 tmp/
