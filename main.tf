@@ -1,18 +1,47 @@
 # see https://github.com/hashicorp/terraform
 terraform {
-  required_version = "~> 0.12.24"
+  required_version = "1.3.1"
+  required_providers {
+    # see https://github.com/hashicorp/terraform-provider-random
+    # see https://registry.terraform.io/providers/hashicorp/random
+    random = {
+      source  = "hashicorp/random"
+      version = "3.4.3"
+    }
+    # see https://github.com/terraform-providers/terraform-provider-azurerm
+    # see https://registry.terraform.io/providers/hashicorp/azurerm
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "3.25.0"
+    }
+    # see https://github.com/terraform-providers/terraform-provider-helm
+    # see https://registry.terraform.io/providers/hashicorp/helm
+    helm = {
+      source  = "hashicorp/helm"
+      version = "2.7.0"
+    }
+  }
 }
 
 # see https://github.com/terraform-providers/terraform-provider-azurerm
 provider "azurerm" {
-  version = "~> 2.4.0"
   features {}
+}
+
+# see https://github.com/terraform-providers/terraform-provider-helm
+provider "helm" {
+  kubernetes {
+    host                   = azurerm_kubernetes_cluster.example.kube_config[0].host
+    client_certificate     = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].client_certificate)
+    client_key             = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].client_key)
+    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].cluster_ca_certificate)
+  }
 }
 
 # NB you can test the relative speed from you browser to a location using https://azurespeedtest.azurewebsites.net/
 # get the available locations with: az account list-locations --output table
 variable "location" {
-  default = "France Central" # see https://azure.microsoft.com/en-us/global-infrastructure/france/
+  default = "northeurope"
 }
 
 # NB this name must be unique within the Azure subscription.
@@ -22,7 +51,7 @@ variable "resource_group_name" {
 }
 
 variable "tags" {
-  type = map
+  type = map(any)
 
   default = {
     owner = "rgl"
@@ -46,11 +75,17 @@ variable "admin_ssh_key_data" {}
 #    TF_VAR_service_principal_client_id environment variable,
 #    which comes from the service-principal.json file.
 variable "service_principal_client_id" {}
-  
+
 # NB when you run make terraform-apply this is set from the
 #    TF_VAR_service_principal_client_secret environment variable,
 #    which comes from the service-principal.json file.
 variable "service_principal_client_secret" {}
+
+# see az aks get-versions -l northeurope
+# see https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions
+variable "k8s_version" {
+  default = "1.24.3"
+}
 
 output "kube_config" {
   sensitive = true
@@ -94,15 +129,15 @@ resource "azurerm_log_analytics_solution" "example" {
   }
 }
 
-# see https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html
-# see https://docs.microsoft.com/en-us/azure/aks/
+# see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster
+# see https://learn.microsoft.com/en-us/azure/aks/
 resource "azurerm_kubernetes_cluster" "example" {
   name                = "example"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
   # NB the default is MC_<resource_group_name>_<location> which is harder to see
   #    in the portal when we sort the resources by name.
-  #    e.g. MC_rgl-aks-example_example_francecentral
+  #    e.g. MC_rgl-aks-example_example_northeurope
   # NB this resource group is automatically created and must not already exist.
   node_resource_group = "${azurerm_resource_group.example.name}-node"
 
@@ -110,47 +145,37 @@ resource "azurerm_kubernetes_cluster" "example" {
   #    by the following pattern:
   #       https://<dns_prefix>-<random>.hcp.<location>.azmk8s.io
   #    for example:
-  #       https://example-87d0a6ab.hcp.francecentral.azmk8s.io
+  #       https://example-87d0a6ab.hcp.northeurope.azmk8s.io
   dns_prefix         = "example"
-  kubernetes_version = "1.17.3"
+  kubernetes_version = var.k8s_version
 
   default_node_pool {
-    name            = "default"
-    vm_size         = "Standard_D1_v2"
-    os_disk_size_gb = 30
-    node_count      = 1
+    name                 = "default"
+    vm_size              = "Standard_D2_v2"
+    os_disk_size_gb      = 30
+    node_count           = 1
+    orchestrator_version = var.k8s_version
   }
 
   network_profile {
     network_plugin    = "kubenet"
-    load_balancer_sku = "Standard"
+    load_balancer_sku = "standard"
   }
 
   linux_profile {
     # to ssh into the managed worker nodes see:
     #   https://unofficialism.info/posts/easy-way-ssh-into-aks-cluster-node/
     #   https://github.com/yokawasa/kubectl-plugin-ssh-jump
-    #   https://docs.microsoft.com/en-us/azure/aks/ssh
+    #   https://learn.microsoft.com/en-us/azure/aks/node-access
     admin_username = var.admin_username
     ssh_key {
       key_data = var.admin_ssh_key_data
     }
   }
 
-  addon_profile {
-    kube_dashboard {
-      enabled = true
-    }
-
-    # see https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-onboard
-    oms_agent {
-      enabled                    = true
-      log_analytics_workspace_id = azurerm_log_analytics_workspace.example.id
-    }
-  }
-
-  role_based_access_control {
-    enabled = true
+  # see https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-onboard
+  oms_agent {
+    log_analytics_workspace_id = azurerm_log_analytics_workspace.example.id
   }
 
   service_principal {

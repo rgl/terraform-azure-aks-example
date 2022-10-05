@@ -16,7 +16,8 @@ terraform-apply: shared/service-principal.json ~/.ssh/id_rsa
 	TF_VAR_service_principal_client_id="$(shell jq -r .appId shared/service-principal.json)" \
 	TF_VAR_service_principal_client_secret="$(shell jq -r .password shared/service-principal.json)" \
 	time terraform apply
-	terraform output kube_config >shared/kube.conf
+	install -m 600 /dev/null shared/kube.conf
+	terraform output -raw kube_config >shared/kube.conf
 	KUBECONFIG=shared/kube.conf kubectl cluster-info
 	KUBECONFIG=shared/kube.conf kubectl get nodes -o wide
 

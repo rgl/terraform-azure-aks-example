@@ -9,7 +9,7 @@ Vagrant.configure('2') do |config|
     lv.cpu_mode = 'host-passthrough'
     # lv.nested = true
     lv.keymap = 'pt'
-    config.vm.synced_folder '.', '/vagrant', type: 'nfs'
+    config.vm.synced_folder '.', '/vagrant', type: 'nfs', nfs_version: '4.2', nfs_udp: false
   end
 
   config.vm.provider :virtualbox do |vb|
@@ -20,7 +20,7 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.define 'builder' do |config|
-    config.vm.box = 'ubuntu-18.04-amd64'
+    config.vm.box = 'ubuntu-22.04-amd64'
     config.vm.hostname = 'builder.test'
     config.vm.provision :shell, path: 'provision-base.sh'
     config.vm.provision :shell, path: 'provision-tools.sh'

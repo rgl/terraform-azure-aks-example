@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euxo pipefail
 
-AZ="$(whereis az | sed -E 's,az: ,,g')"
+AZ="$(which az)"
 
 subscription_id="$("$AZ" account show --query id --output tsv)"
 
@@ -24,6 +24,7 @@ mkdir -p shared
 #    from assuming this is a path that needs to be made absolute).
 # see https://www.terraform.io/docs/providers/azurerm/guides/service_principal_client_secret.html
 # TODO restrict this to the resource-group instead?
+install -m 600 /dev/null shared/service-principal.json
 "$AZ" ad sp \
     create-for-rbac \
     --name rgl-aks-example \

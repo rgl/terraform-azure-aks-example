@@ -8,6 +8,8 @@ Install the tools (or launch and enter the builder environment):
 # install the tools.
 ./provision-tools.sh
 # OR launch the builder environment and use the tools inside it.
+# NB you must install the ubuntu 22.04 vagrant base box from:
+#     https://github.com/rgl/ubuntu-vagrant
 time vagrant up builder
 vagrant ssh
 cd /vagrant
@@ -62,7 +64,8 @@ export KUBECONFIG=$PWD/shared/kube.conf
 mkdir -p tmp && cd tmp
 
 # deploy the workload.
-kubernetes_hello_version='v0.0.0.202004041457-test'
+# see https://github.com/rgl/kubernetes-hello
+kubernetes_hello_version='v0.0.0.202210042110-test'
 wget -qO \
     resources.yml \
     https://raw.githubusercontent.com/rgl/kubernetes-hello/$kubernetes_hello_version/resources.yml
@@ -100,6 +103,13 @@ When you are done with the example, destroy it:
 
 ```bash
 kubectl delete --kustomize .
+cd ..
+```
+
+And destroy everything:
+
+```bash
+make terraform-destroy
 ```
 
 ## Kubernetes Dashboard
@@ -114,15 +124,24 @@ kubectl proxy &
 Create the admin user and save its token:
 
 ```bash
-# create the admin user.
-# see https://github.com/kubernetes/dashboard/wiki/Creating-sample-user
-# see https://github.com/kubernetes/dashboard/wiki/Access-control
-kubectl apply -f - <<'EOF'
+# create the admin user for use in the kubernetes-dashboard.
+# see https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
+# see https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/README.md
+# see https://kubernetes.io/docs/concepts/configuration/secret/#service-account-token-secrets
+kubectl apply -n kube-system -f - <<'EOF'
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: admin
-  namespace: kube-system
+---
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/service-account-token
+metadata:
+  name: admin
+  annotations:
+    kubernetes.io/service-account.name: admin
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -138,18 +157,16 @@ subjects:
     namespace: kube-system
 EOF
 # save the admin token.
-kubectl \
-  -n kube-system \
-  get \
-  secret \
-  $(kubectl -n kube-system get secret | grep admin-token- | awk '{print $1}') \
-  -o json | jq -j .data.token | base64 --decode \
+install -m 600 /dev/null shared/kube-admin-token.txt
+kubectl -n kube-system get secret admin -o json \
+  | jq -r .data.token \
+  | base64 --decode \
   >shared/kube-admin-token.txt
 ```
 
 Then access the kubernetes dashboard at:
 
-    http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
+  http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:https/proxy/
 
 Then select `Token` and use the contents of `shared/kube-admin-token.txt` as the token.
 
@@ -157,9 +174,9 @@ Alternatively you could [assign the cluster-admin role to the kubernetes-dashboa
 
 # Reference
 
-* https://docs.microsoft.com/en-us/azure/aks/
-* https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks
+* https://learn.microsoft.com/en-us/azure/aks/
+* https://learn.microsoft.com/en-us/azure/developer/terraform/create-k8s-cluster-with-tf-and-aks
 * https://azure.microsoft.com/en-us/pricing/details/monitor/
 * https://github.com/terraform-providers/terraform-provider-azurerm/tree/master/examples/kubernetes
-* https://docs.microsoft.com/en-us/azure/aks/load-balancer-standard
-* https://docs.microsoft.com/en-us/azure/aks/internal-lb
+* https://learn.microsoft.com/en-us/azure/aks/load-balancer-standard
+* https://learn.microsoft.com/en-us/azure/aks/internal-lb
