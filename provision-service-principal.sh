@@ -26,7 +26,7 @@ mkdir -p shared
 # TODO restrict this to the resource-group instead?
 "$AZ" ad sp \
     create-for-rbac \
-    --name http://rgl-aks-example \
+    --name rgl-aks-example \
     --role Contributor \
     --scopes //subscriptions/$subscription_id \
     >shared/service-principal.json
