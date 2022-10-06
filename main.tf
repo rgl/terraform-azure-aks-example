@@ -38,12 +38,36 @@ terraform {
       source  = "hashicorp/helm"
       version = "2.7.0"
     }
+    # see https://registry.terraform.io/providers/gavinbunney/kubectl
+    # see https://github.com/gavinbunney/terraform-provider-kubectl
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = "1.14.0"
+    }
   }
 }
 
 # see https://github.com/terraform-providers/terraform-provider-azurerm
 provider "azurerm" {
   features {}
+}
+
+# see https://github.com/terraform-providers/terraform-provider-kubernetes
+provider "kubernetes" {
+  host                   = azurerm_kubernetes_cluster.example.kube_config[0].host
+  client_certificate     = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].client_certificate)
+  client_key             = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].client_key)
+  cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].cluster_ca_certificate)
+}
+
+# see https://registry.terraform.io/providers/gavinbunney/kubectl
+# see https://github.com/gavinbunney/terraform-provider-kubectl
+provider "kubectl" {
+  load_config_file       = false
+  host                   = azurerm_kubernetes_cluster.example.kube_config[0].host
+  client_certificate     = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].client_certificate)
+  client_key             = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].client_key)
+  cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].cluster_ca_certificate)
 }
 
 # see https://github.com/terraform-providers/terraform-provider-helm

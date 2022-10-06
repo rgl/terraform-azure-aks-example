@@ -1,0 +1,186 @@
+---
+# see https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#serviceaccount-v1-core
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hello
+---
+# see https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#role-v1-rbac-authorization-k8s-io
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-read
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+# see https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#rolebinding-v1-rbac-authorization-k8s-io
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hello-pod-read
+subjects:
+  - kind: ServiceAccount
+    name: hello
+roleRef:
+  kind: Role
+  name: pod-read
+  apiGroup: rbac.authorization.k8s.io
+---
+# see https://cert-manager.io/docs/reference/api-docs/#cert-manager.io/v1.Certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hello
+spec:
+  dnsNames:
+    - hello.example.com
+  privateKey:
+    algorithm: ECDSA # NB Ed25519 is not yet supported by chrome 93 or firefox 91.
+    size: 256
+  secretName: hello-certificate
+  issuerRef:
+    kind: ClusterIssuer
+    name: ingress
+---
+# see https://kubernetes.io/docs/concepts/services-networking/ingress/
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#ingress-v1-networking-k8s-io
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello
+spec:
+  tls:
+    - secretName: hello-certificate
+  rules:
+    - host: hello.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hello
+                port:
+                  name: http
+---
+# see https://kubernetes.io/docs/concepts/services-networking/service/
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core
+# see https://github.com/kubernetes-sigs/external-dns/blob/v0.12.2/docs/initial-design.md
+# see https://github.com/kubernetes-sigs/external-dns/blob/v0.12.2/docs/ttl.md
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello
+spec:
+  selector:
+    app: hello
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+---
+# see https://kubernetes.io/docs/concepts/configuration/secret/
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#secret-v1-core
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: hello-secrets
+stringData:
+  username: ali.baba
+  password: Open Sesame
+---
+# see https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#configmap-v1-core
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hello-configs
+data:
+  config-a.toml: |
+    # a comment
+    [table1]
+    name = "config-a"
+
+    [table2]
+    key = "string value"
+  config-b.toml: |
+    # a comment
+    [table1]
+    name = "config-b"
+
+    [table2]
+    key = "string value"
+---
+# see https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+# see https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#daemonset-v1-apps
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#podtemplatespec-v1-core
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: hello
+spec:
+  selector:
+    matchLabels:
+      app: hello
+  template:
+    metadata:
+      labels:
+        app: hello
+    spec:
+      serviceAccountName: hello
+      nodeSelector:
+        kubernetes.io/arch: amd64
+        kubernetes.io/os: linux
+      containers:
+        - name: hello
+          image: ruilopes/kubernetes-hello:v0.0.0.202210042110-test
+          ports:
+            - name: http
+              containerPort: 8000
+          resources:
+            requests:
+              memory: 20Mi
+              cpu: 0.1
+            limits:
+              memory: 20Mi
+              cpu: 0.1
+          env:
+            # see https://github.com/kubernetes/kubernetes/blob/master/test/e2e/common/downward_api.go
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: secrets
+              readOnly: true
+              mountPath: /var/run/secrets/example
+            - name: configs
+              readOnly: true
+              mountPath: /var/run/configs/example
+      volumes:
+        - name: secrets
+          secret:
+            secretName: hello-secrets
+            defaultMode: 0400
+        - name: configs
+          configMap:
+            name: hello-configs
+            defaultMode: 0400

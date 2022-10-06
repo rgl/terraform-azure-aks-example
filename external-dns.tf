@@ -1,6 +1,6 @@
 # see https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application
 resource "azuread_application" "external_dns" {
-  display_name = "external-dns"
+  display_name = "${var.resource_group_name}-external-dns"
   owners       = [data.azuread_client_config.current.object_id]
 }
 
