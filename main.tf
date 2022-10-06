@@ -140,7 +140,7 @@ variable "service_principal_client_secret" {}
 # see az aks get-versions -l northeurope
 # see https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions
 variable "k8s_version" {
-  default = "1.24.3"
+  default = "1.24.6"
 }
 
 output "dns_zone" {
