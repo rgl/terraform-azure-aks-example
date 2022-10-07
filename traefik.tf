@@ -52,11 +52,6 @@ resource "helm_release" "traefik" {
         enabled = false
       }
     }
-    # disable pilot.
-    pilot = {
-      enabled   = false
-      dashboard = false
-    }
     # disable the telemetry (this is done by setting globalArguments).
     globalArguments = []
   })]
