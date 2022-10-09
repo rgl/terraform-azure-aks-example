@@ -110,8 +110,28 @@ variable "dns_zone" {
   default = "example.com"
 }
 
+# NB Let's Encrypt will use this to contact you about expiring
+#    certificates and issues related to your account.
+# see https://letsencrypt.org/docs/expiration-emails/
 variable "letsencrypt_email" {
   default = "john.doe@example.com"
+}
+
+# the Let's Encrypt server to use.
+# NB for production, you should change this from:
+#       https://acme-staging-v02.api.letsencrypt.org/directory
+#     to:
+#       https://acme-v02.api.letsencrypt.org/directory
+# see https://letsencrypt.org/docs/staging-environment/
+# see https://letsencrypt.org/docs/rate-limits/
+# see https://letsencrypt.org/docs/duplicate-certificate-limit/
+variable "letsencrypt_server" {
+  default     = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  description = "The Let's Encrypt server to use"
+  validation {
+    condition     = contains(["https://acme-staging-v02.api.letsencrypt.org/directory", "https://acme-v02.api.letsencrypt.org/directory"], var.letsencrypt_server)
+    error_message = "Unknown value"
+  }
 }
 
 variable "admin_username" {

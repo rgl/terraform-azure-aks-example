@@ -37,10 +37,11 @@ az account set --subscription=<id>
 az account show
 ```
 
-Review `main.tf` and at least change the variables:
+Review `main.tf`, especially, the variables:
 
 * `dns_zone`
 * `letsencrypt_email`
+* `letsencrypt_server`
 
 Initialize terraform:
 
@@ -51,6 +52,8 @@ make terraform-init
 Launch the example:
 
 ```bash
+# NB you have to be aware of the Let's Encrypt rate limits.
+#    see https://letsencrypt.org/docs/duplicate-certificate-limit/
 make terraform-apply
 ```
 

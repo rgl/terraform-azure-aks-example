@@ -55,6 +55,7 @@ resource "kubernetes_secret" "cert_manager_azure_dns" {
 # see https://github.com/cert-manager/cert-manager/tree/master/deploy/charts/cert-manager
 # see https://cert-manager.io/docs/installation/supported-releases/
 # see https://cert-manager.io/docs/configuration/acme/
+# see https://letsencrypt.org/docs/rate-limits/
 # see https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release
 resource "helm_release" "cert_manager" {
   namespace  = kubernetes_namespace.cert_manager.metadata[0].name
@@ -73,6 +74,8 @@ resource "helm_release" "cert_manager" {
 # see https://cert-manager.io/docs/configuration/acme/
 # see https://cert-manager.io/docs/configuration/acme/dns01/
 # see https://cert-manager.io/docs/configuration/acme/dns01/azuredns/#service-principal
+# see https://letsencrypt.org/docs/staging-environment/
+# see https://letsencrypt.org/docs/duplicate-certificate-limit/
 resource "kubectl_manifest" "cert_manager_ingress" {
   depends_on = [
     helm_release.cert_manager
@@ -86,7 +89,7 @@ resource "kubectl_manifest" "cert_manager_ingress" {
     }
     spec = {
       acme = {
-        server = "https://acme-v02.api.letsencrypt.org/directory"
+        server = var.letsencrypt_server
         email  = var.letsencrypt_email
         privateKeySecretRef = {
           name = "cert-manager-ingress-letsencrypt"

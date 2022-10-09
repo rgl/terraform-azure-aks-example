@@ -8,7 +8,7 @@ terraform-init:
 	CHECKPOINT_DISABLE=1 \
 	terraform -v
 
-terraform-apply: shared/service-principal.json ~/.ssh/id_rsa
+terraform-apply: shared/service-principal.json shared/letsencrypt-staging-ca-certificates.pem ~/.ssh/id_rsa
 	CHECKPOINT_DISABLE=1 \
 	TF_LOG=TRACE \
 	TF_LOG_PATH=terraform.log \
@@ -32,6 +32,10 @@ terraform-destroy:
 
 shared/service-principal.json:
 	./provision-service-principal.sh
+
+# see https://letsencrypt.org/docs/staging-environment/
+shared/letsencrypt-staging-ca-certificates.pem:
+	wget -qO $@ https://letsencrypt.org/certs/staging/letsencrypt-stg-root-x2.pem
 
 ~/.ssh/id_rsa:
 	ssh-keygen -f $@ -t rsa -b 2048 -C "$$USER@$$(hostname --fqdn)" -N ''
