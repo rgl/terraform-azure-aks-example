@@ -100,46 +100,25 @@ kubectl get storageclass
 Deploy the example `hello` workload:
 
 ```bash
-export KUBECONFIG=$PWD/shared/kube.conf
-dns_zone="$(terraform output -raw dns_zone)"
-sed -E "s,(\.example\.com),.$dns_zone,g" hello/resources.yml \
-  | kubectl apply -f -
+./hello/deploy.sh
 ```
 
-Execute an HTTP request to the example `hello` workload ingress:
+Test the `hello` endpoint TLS at:
+
+  https://www.ssllabs.com/ssltest/
+
+Test the `hello` endpoint HTTP to HTTPS redirect:
 
 ```bash
 hello_ingress="$(kubectl get ingress hello -o json)"
 hello_host="$(jq -r '.spec.rules[0].host' <<<"$hello_ingress")"
-hello_ip="$(jq -r '.status.loadBalancer.ingress[0].ip' <<<"$hello_ingress")"
-curl \
-  --resolve "$hello_host:80:$hello_ip" \
-  "http://$hello_host"
+wget "http://$hello_host"
 ```
-
-Execute `dig` until the host domain resolves:
-
-```bash
-# NB the external-dns controller takes some time to update the dns zone.
-dig "$hello_host"
-```
-
-Execute an HTTPS request to the example `hello` workload ingress:
-
-```bash
-# NB the cert-manager controller takes some time to create the certificate.
-curl "https://$hello_host"
-```
-
-Manually test the HTTPS ingress at:
-
-  https://www.ssllabs.com/ssltest/
 
 When you are done with the `hello` example, destroy it:
 
 ```bash
-sed -E "s,(\.example\.com),.$dns_zone,g" hello/resources.yml \
-  | kubectl delete -f -
+./hello/destroy.sh
 ```
 
 And destroy everything:
