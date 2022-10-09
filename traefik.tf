@@ -16,6 +16,9 @@ resource "helm_release" "traefik" {
     }
     # configure the ports.
     ports = {
+      web = {
+        redirectTo = "websecure"
+      }
       websecure = {
         tls = {
           enabled = true
