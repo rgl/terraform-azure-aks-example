@@ -42,6 +42,7 @@ resource "helm_release" "external_dns" {
   chart      = "external-dns"
   version    = "6.10.2" # app version 0.12.2
   values = [yamlencode({
+    policy     = "sync"
     txtOwnerId = var.resource_group_name
     sources = [
       "ingress"
