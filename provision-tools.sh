@@ -47,3 +47,12 @@ wget -qO- "https://github.com/derailed/k9s/releases/download/$k9s_version/k9s_Li
 install -m 755 k9s /usr/local/bin/
 rm k9s
 k9s version
+
+# install cmctl.
+# see https://github.com/cert-manager/cert-manager/releases
+cmctl_version='v1.9.1'
+wget -qO- "https://github.com/cert-manager/cert-manager/releases/download/$cmctl_version/cmctl-linux-amd64.tar.gz" \
+  | tar xzf - cmctl
+install -m 755 cmctl /usr/local/bin/
+rm cmctl
+cmctl version
