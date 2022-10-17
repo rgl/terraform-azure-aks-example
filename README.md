@@ -104,6 +104,8 @@ Deploy the example `hello` workload:
 ./hello/deploy.sh
 ```
 
+**NB** Be aware of the [cert-manager issue #5515](https://github.com/cert-manager/cert-manager/issues/5515).
+
 Test the `hello` endpoint TLS at:
 
   https://www.ssllabs.com/ssltest/
