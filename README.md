@@ -83,7 +83,8 @@ Verify the delegation:
 ```bash
 dns_zone="$(terraform output -raw dns_zone)"
 dns_zone_name_server="$(terraform output -json dns_zone_name_servers | jq -r '.[0]')"
-dig ns $dns_zone "@$dns_zone_name_server"
+dig ns $dns_zone "@$dns_zone_name_server" # verify with azure dns.
+dig ns $dns_zone                # verify with your local resolver.
 ```
 
 See some information about the cluster:
