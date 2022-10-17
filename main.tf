@@ -12,7 +12,7 @@ terraform {
     # see https://registry.terraform.io/providers/hashicorp/time
     time = {
       source  = "hashicorp/time"
-      version = "0.8.0"
+      version = "0.9.0"
     }
     # see https://github.com/terraform-providers/terraform-provider-azuread
     # see https://registry.terraform.io/providers/hashicorp/azuread
