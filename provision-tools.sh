@@ -25,7 +25,7 @@ echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_rel
     | sudo tee /etc/apt/sources.list.d/azure-cli.list
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 sudo apt-get update
-sudo apt-get install -y 'azure-cli=2.40.0-*'
+sudo apt-get install -y 'azure-cli=2.41.0-*'
 az --version
 
 # install kubectl.
