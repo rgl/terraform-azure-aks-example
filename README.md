@@ -131,6 +131,14 @@ When you are done with the `hello` example, destroy it:
 ./hello/destroy.sh
 ```
 
+Try recreating the `traefik` helm release:
+
+```bash
+export KUBECONFIG=$PWD/shared/kube.conf
+helm uninstall traefik --namespace kube-system --wait # delete.
+make terraform-apply                   # create with terraform.
+```
+
 And destroy everything:
 
 ```bash
