@@ -3,6 +3,7 @@ an example azure kubernetes cluster using aks
 This will use [terraform](https://www.terraform.io/) to:
 
 * Create an [Azure Kubernetes Service (AKS)](https://learn.microsoft.com/en-us/azure/aks/) Kubernetes instance.
+  * With [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/) authentication.
 * Create a public [Azure DNS Zone](https://learn.microsoft.com/en-us/azure/dns/dns-overview).
 * Use [Traefik](https://traefik.io/) as the Ingress Controller.
 * Use [external-dns](https://github.com/kubernetes-sigs/external-dns) to create the Ingress DNS Resource Records in the Azure DNS Zone.
@@ -35,6 +36,20 @@ List the subscriptions and select the current one if the default is not OK:
 az account list
 az account set --subscription=<id>
 az account show
+```
+
+Enable the AKS preview features to be able to use Azure Workload Identity
+authentication:
+
+```bash
+az extension add --name aks-preview
+az extension update --name aks-preview
+# TODO is this enabled subscription wide?
+az feature register \
+  --namespace Microsoft.ContainerService \
+  --name EnableWorkloadIdentityPreview
+az provider register \
+  --namespace Microsoft.ContainerService
 ```
 
 Review `main.tf`, especially, the variables:
@@ -89,7 +104,7 @@ dig ns $dns_zone                # verify with your local resolver.
 
 Show the `cert-manager` application and role assignments:
 
-**NB** Only the single `DNS Zone Contributor` assigment is expected.
+**NB** Only the single `DNS Zone Contributor` assignment is expected.
 
 ```bash
 cert_manager_application_id="$(

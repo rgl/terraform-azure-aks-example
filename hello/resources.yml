@@ -1,11 +1,4 @@
 ---
-# see https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#serviceaccount-v1-core
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: hello
----
 # see https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 # see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#role-v1-rbac-authorization-k8s-io
 apiVersion: rbac.authorization.k8s.io/v1
@@ -24,6 +17,7 @@ kind: RoleBinding
 metadata:
   name: hello-pod-read
 subjects:
+  # NB this service account is created in hello.tf.
   - kind: ServiceAccount
     name: hello
 roleRef:

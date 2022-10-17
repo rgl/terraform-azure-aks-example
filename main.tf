@@ -232,6 +232,12 @@ resource "azurerm_kubernetes_cluster" "example" {
   # see https://techblog.cisco.com/blog/kubernetes-oidc
   oidc_issuer_enabled = true
 
+  # enable workload identity.
+  # NB you MUST enable the OIDC Issuer too.
+  # see https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview
+  # see https://azure.github.io/azure-workload-identity/docs/
+  workload_identity_enabled = true
+
   # NB dns_prefix will be used in the k8s api server public address as defined
   #    by the following pattern:
   #       https://<dns_prefix>-<random>.hcp.<location>.azmk8s.io
