@@ -6,8 +6,8 @@ sudo apt-get install -y apt-transport-https make unzip jq xmlstarlet
 
 # install terraform.
 # see https://www.terraform.io/downloads
-artifact_url=https://releases.hashicorp.com/terraform/1.3.1/terraform_1.3.1_linux_amd64.zip
-artifact_sha=0847b14917536600ba743a759401c45196bf89937b51dd863152137f32791899
+artifact_url=https://releases.hashicorp.com/terraform/1.3.2/terraform_1.3.2_linux_amd64.zip
+artifact_sha=6372e02a7f04bef9dac4a7a12f4580a0ad96a37b5997e80738e070be330cb11c
 artifact_path="/tmp/$(basename $artifact_url)"
 wget -qO $artifact_path $artifact_url
 if [ "$(sha256sum $artifact_path | awk '{print $1}')" != "$artifact_sha" ]; then
