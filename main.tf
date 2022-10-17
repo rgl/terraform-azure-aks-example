@@ -24,7 +24,7 @@ terraform {
     # see https://registry.terraform.io/providers/hashicorp/azurerm
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.26.0"
+      version = "3.27.0"
     }
     # see https://github.com/terraform-providers/terraform-provider-kubernetes
     # see https://registry.terraform.io/providers/hashicorp/kubernetes
