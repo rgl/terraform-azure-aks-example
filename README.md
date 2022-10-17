@@ -98,6 +98,13 @@ kubectl get pvc --all-namespaces
 kubectl get storageclass
 ```
 
+List the installed helm releases:
+
+```bash
+export KUBECONFIG=$PWD/shared/kube.conf
+helm list --all-namespaces
+```
+
 Deploy the example `hello` workload:
 
 ```bash
