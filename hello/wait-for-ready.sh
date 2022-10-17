@@ -24,7 +24,9 @@ while ! kubectl wait --timeout=3m --for=condition=Ready certificate/hello; do
   kubectl get event --field-selector=involvedObject.kind=Certificate,involvedObject.name=hello
 done
 echo "Certificate is ready."
-cmctl status certificate hello
+if [ -x cmctl ]; then
+  cmctl status certificate hello
+fi
 
 # wait for the endpoint to be ready.
 echo "Waiting for the https://$hello_host endpoint to be ready..."
