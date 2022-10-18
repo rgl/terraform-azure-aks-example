@@ -144,7 +144,7 @@ spec:
         kubernetes.io/os: linux
       containers:
         - name: hello
-          image: ruilopes/kubernetes-hello:v0.0.0.202210042110-test
+          image: ruilopes/kubernetes-hello:v0.0.0.202210181525-test
           ports:
             - name: http
               containerPort: 8000
