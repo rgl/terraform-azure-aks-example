@@ -87,7 +87,7 @@ dig ns $dns_zone "@$dns_zone_name_server" # verify with azure dns.
 dig ns $dns_zone                # verify with your local resolver.
 ```
 
-Show the `cert-manager` application role assignments:
+Show the `cert-manager` application and role assignments:
 
 **NB** Only the single `DNS Zone Contributor` assigment is expected.
 
@@ -96,10 +96,12 @@ cert_manager_application_id="$(
   terraform show -json \
     | jq \
         -r \
-        '.values.root_module.resources[] 
+        '.values.root_module.resources[]
           | select(.address == "azuread_application.cert_manager")
           | .values.application_id'
 )"
+az ad sp show \
+  --id "$cert_manager_application_id"
 az role assignment list \
   --all \
   --assignee "$cert_manager_application_id"
