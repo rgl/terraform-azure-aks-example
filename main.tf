@@ -166,6 +166,10 @@ output "kube_config" {
   value     = azurerm_kubernetes_cluster.example.kube_config_raw
 }
 
+output "oidc_issuer_url" {
+  value = azurerm_kubernetes_cluster.example.oidc_issuer_url
+}
+
 resource "azurerm_resource_group" "example" {
   name     = var.resource_group_name # NB this name must be unique within the Azure subscription.
   location = var.location
@@ -220,6 +224,13 @@ resource "azurerm_kubernetes_cluster" "example" {
   #    e.g. MC_rgl-aks-example_example_northeurope
   # NB this resource group is automatically created and must not already exist.
   node_resource_group = "${azurerm_resource_group.example.name}-node"
+
+  # enable the OIDC Issuer.
+  # see https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#oidc-issuer
+  # see https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection
+  # see https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-issuer-discovery
+  # see https://techblog.cisco.com/blog/kubernetes-oidc
+  oidc_issuer_enabled = true
 
   # NB dns_prefix will be used in the k8s api server public address as defined
   #    by the following pattern:

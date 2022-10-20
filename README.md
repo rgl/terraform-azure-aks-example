@@ -145,6 +145,16 @@ hello_host="$(jq -r '.spec.rules[0].host' <<<"$hello_ingress")"
 wget "http://$hello_host"
 ```
 
+Show the [OpenID Connect (OIDC) Discovery (aka OpenID Provider Metadata/Configuration)](https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata) and the [JSON Web Key Sets (JWKS)](https://datatracker.ietf.org/doc/html/rfc7517) documents:
+
+```bash
+oidc_issuer_url="$(terraform output -raw oidc_issuer_url)"
+openid_configuration="$(wget -qO- "$oidc_issuer_url/.well-known/openid-configuration")"
+jwks_uri="$(jq -r .jwks_uri <<<"$openid_configuration")"
+jq <<<"$openid_configuration"
+wget -qO- "$jwks_uri" | jq
+```
+
 When you are done with the `hello` example, destroy it:
 
 ```bash
