@@ -147,16 +147,6 @@ variable "admin_password" {
 #    comes from the ~/.ssh/id_rsa.pub file.
 variable "admin_ssh_key_data" {}
 
-# NB when you run make terraform-apply this is set from the
-#    TF_VAR_service_principal_client_id environment variable,
-#    which comes from the service-principal.json file.
-variable "service_principal_client_id" {}
-
-# NB when you run make terraform-apply this is set from the
-#    TF_VAR_service_principal_client_secret environment variable,
-#    which comes from the service-principal.json file.
-variable "service_principal_client_secret" {}
-
 # see az aks get-versions -l northeurope
 # see https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions
 variable "k8s_version" {
@@ -268,9 +258,8 @@ resource "azurerm_kubernetes_cluster" "example" {
     log_analytics_workspace_id = azurerm_log_analytics_workspace.example.id
   }
 
-  service_principal {
-    client_id     = var.service_principal_client_id
-    client_secret = var.service_principal_client_secret
+  identity {
+    type = "SystemAssigned"
   }
 
   tags = var.tags
