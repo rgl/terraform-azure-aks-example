@@ -157,7 +157,7 @@ Test the `hello` endpoint HTTP to HTTPS redirect:
 ```bash
 hello_ingress="$(kubectl get ingress hello -o json)"
 hello_host="$(jq -r '.spec.rules[0].host' <<<"$hello_ingress")"
-wget "http://$hello_host"
+wget -O- "http://$hello_host"
 ```
 
 Show the [OpenID Connect (OIDC) Discovery (aka OpenID Provider Metadata/Configuration)](https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata) and the [JSON Web Key Sets (JWKS)](https://datatracker.ietf.org/doc/html/rfc7517) documents:

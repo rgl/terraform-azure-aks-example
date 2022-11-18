@@ -22,7 +22,7 @@ resource "azurerm_federated_identity_credential" "hello" {
 # see https://learn.microsoft.com/en-us/azure/aks/learn/tutorial-kubernetes-workload-identity
 # see https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview#service-account-labels-and-annotations
 # see https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#serviceaccount-v1-core
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#serviceaccount-v1-core
 # see https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_account_v1
 resource "kubernetes_service_account_v1" "hello" {
   metadata {
