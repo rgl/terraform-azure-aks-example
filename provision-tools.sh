@@ -6,8 +6,8 @@ sudo apt-get install -y apt-transport-https make unzip jq xmlstarlet
 
 # install terraform.
 # see https://www.terraform.io/downloads
-artifact_url=https://releases.hashicorp.com/terraform/1.3.2/terraform_1.3.2_linux_amd64.zip
-artifact_sha=6372e02a7f04bef9dac4a7a12f4580a0ad96a37b5997e80738e070be330cb11c
+artifact_url=https://releases.hashicorp.com/terraform/1.3.5/terraform_1.3.5_linux_amd64.zip
+artifact_sha=ac28037216c3bc41de2c22724e863d883320a770056969b8d211ca8af3d477cf
 artifact_path="/tmp/$(basename $artifact_url)"
 wget -qO $artifact_path $artifact_url
 if [ "$(sha256sum $artifact_path | awk '{print $1}')" != "$artifact_sha" ]; then
@@ -25,7 +25,7 @@ echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_rel
     | sudo tee /etc/apt/sources.list.d/azure-cli.list
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 sudo apt-get update
-sudo apt-get install -y 'azure-cli=2.41.0-*'
+sudo apt-get install -y 'azure-cli=2.42.0-*'
 az --version
 
 # install kubectl.
@@ -38,10 +38,11 @@ wget -qO- https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 add-apt-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
 apt-get update
 apt-get install -y "kubectl=$kubectl_version"
+kubectl version --client --output yaml
 
 # install k9s.
 # see https://github.com/derailed/k9s/releases
-k9s_version='v0.26.6'
+k9s_version='v0.26.7'
 wget -qO- "https://github.com/derailed/k9s/releases/download/$k9s_version/k9s_Linux_x86_64.tar.gz" \
   | tar xzf - k9s
 install -m 755 k9s /usr/local/bin/
@@ -55,4 +56,4 @@ wget -qO- "https://github.com/cert-manager/cert-manager/releases/download/$cmctl
   | tar xzf - cmctl
 install -m 755 cmctl /usr/local/bin/
 rm cmctl
-cmctl version
+cmctl version --client --output yaml
