@@ -40,7 +40,7 @@ resource "helm_release" "external_dns" {
   name       = "external-dns"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "external-dns"
-  version    = "6.10.2" # app version 0.12.2
+  version    = "6.12.0" # app version 0.13.1
   values = [yamlencode({
     policy     = "sync"
     txtOwnerId = var.resource_group_name
