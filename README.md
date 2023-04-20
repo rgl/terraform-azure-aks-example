@@ -15,7 +15,7 @@ Install the tools (or launch and enter the builder environment):
 
 ```bash
 # install the tools.
-./provision-tools.sh
+sudo ./provision-tools.sh
 # OR launch the builder environment and use the tools inside it.
 # NB you must install the ubuntu 22.04 vagrant base box from:
 #     https://github.com/rgl/ubuntu-vagrant
