@@ -1,51 +1,40 @@
-# see https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application
-resource "azuread_application" "cert_manager" {
-  display_name = "${var.resource_group_name}-cert-manager"
-  owners       = [data.azuread_client_config.current.object_id]
+locals {
+  cert_manager_namespace            = "cert-manager"
+  cert_manager_service_account_name = "cert-manager"
 }
 
-# see https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/rotating
-resource "time_rotating" "cert_manager" {
-  rotation_days = 7
+# see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity
+resource "azurerm_user_assigned_identity" "cert_manager" {
+  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.example.location
+  name                = "cert-manager"
 }
 
-# see https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password
-resource "azuread_application_password" "cert_manager" {
-  application_object_id = azuread_application.cert_manager.object_id
-  rotate_when_changed = {
-    rotation = time_rotating.cert_manager.id
-  }
-}
-
-# see https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal
-resource "azuread_service_principal" "cert_manager" {
-  application_id               = azuread_application.cert_manager.application_id
-  owners                       = [data.azuread_client_config.current.object_id]
-  app_role_assignment_required = false
+# see az identity federated-credential list
+# see https://github.com/MicrosoftDocs/azure-docs/issues/100111#issuecomment-1282914138
+# see https://azure.github.io/azure-workload-identity/docs/quick-start.html
+# see https://learn.microsoft.com/en-us/azure/aks/learn/tutorial-kubernetes-workload-identity#establish-federated-identity-credential
+# see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/federated_identity_credential
+resource "azurerm_federated_identity_credential" "cert_manager" {
+  resource_group_name = azurerm_resource_group.example.name
+  name                = "cert-manager"
+  parent_id           = azurerm_user_assigned_identity.cert_manager.id
+  issuer              = azurerm_kubernetes_cluster.example.oidc_issuer_url
+  subject             = "system:serviceaccount:${local.cert_manager_namespace}:${local.cert_manager_service_account_name}"
+  audience            = ["api://AzureADTokenExchange"]
 }
 
 # see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment
 resource "azurerm_role_assignment" "cert_manager" {
   scope                = azurerm_dns_zone.ingress.id
-  principal_id         = azuread_service_principal.cert_manager.id
+  principal_id         = azurerm_user_assigned_identity.cert_manager.principal_id
   role_definition_name = "DNS Zone Contributor"
 }
 
 # see https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace
 resource "kubernetes_namespace" "cert_manager" {
   metadata {
-    name = "cert-manager"
-  }
-}
-
-# see https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret
-resource "kubernetes_secret" "cert_manager_azure_dns" {
-  metadata {
-    namespace = kubernetes_namespace.cert_manager.metadata[0].name
-    name      = "cert-manager-azure-dns"
-  }
-  data = {
-    client_secret = azuread_application_password.external_dns.value
+    name = local.cert_manager_namespace
   }
 }
 
@@ -55,10 +44,11 @@ resource "kubernetes_secret" "cert_manager_azure_dns" {
 # see https://github.com/cert-manager/cert-manager/tree/master/deploy/charts/cert-manager
 # see https://cert-manager.io/docs/installation/supported-releases/
 # see https://cert-manager.io/docs/configuration/acme/
+# see https://cert-manager.io/docs/tutorials/getting-started-aks-letsencrypt/
 # see https://letsencrypt.org/docs/rate-limits/
 # see https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release
 resource "helm_release" "cert_manager" {
-  namespace  = kubernetes_namespace.cert_manager.metadata[0].name
+  namespace  = local.cert_manager_namespace
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
@@ -67,13 +57,19 @@ resource "helm_release" "cert_manager" {
     # NB installCRDs is generally not recommended, BUT since this
     #    is a development cluster we YOLO it.
     installCRDs = true
+    podLabels = {
+      "azure.workload.identity/use" = "true"
+    }
+    serviceAccount = {
+      name = local.cert_manager_service_account_name
+    }
   })]
 }
 
 # create the ingress cluster issuer.
 # see https://cert-manager.io/docs/configuration/acme/
 # see https://cert-manager.io/docs/configuration/acme/dns01/
-# see https://cert-manager.io/docs/configuration/acme/dns01/azuredns/#service-principal
+# see https://cert-manager.io/docs/configuration/acme/dns01/azuredns/#managed-identity-using-aad-workload-identity
 # see https://letsencrypt.org/docs/staging-environment/
 # see https://letsencrypt.org/docs/duplicate-certificate-limit/
 resource "kubectl_manifest" "cert_manager_ingress" {
@@ -84,7 +80,7 @@ resource "kubectl_manifest" "cert_manager_ingress" {
     apiVersion = "cert-manager.io/v1"
     kind       = "ClusterIssuer"
     metadata = {
-      namespace = kubernetes_namespace.cert_manager.metadata[0].name
+      namespace = local.cert_manager_namespace
       name      = "ingress"
     }
     spec = {
@@ -102,15 +98,12 @@ resource "kubectl_manifest" "cert_manager_ingress" {
           }
           dns01 = {
             azureDNS = {
-              tenantID          = data.azurerm_client_config.current.tenant_id
               subscriptionID    = data.azurerm_client_config.current.subscription_id
               resourceGroupName = azurerm_dns_zone.ingress.resource_group_name
-              clientID          = azuread_service_principal.external_dns.application_id
-              clientSecretSecretRef = {
-                name = kubernetes_secret.cert_manager_azure_dns.metadata[0].name
-                key  = "client_secret"
+              hostedZoneName    = var.dns_zone
+              managedIdentity = {
+                clientID = azurerm_user_assigned_identity.cert_manager.client_id
               }
-              hostedZoneName = var.dns_zone
             }
           }
         }]

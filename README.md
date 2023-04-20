@@ -8,6 +8,7 @@ This will use [terraform](https://www.terraform.io/) to:
 * Use [Traefik](https://traefik.io/) as the Ingress Controller.
 * Use [external-dns](https://github.com/kubernetes-sigs/external-dns) to create the Ingress DNS Resource Records in the Azure DNS Zone.
 * Use [cert-manager](https://github.com/cert-manager/cert-manager) to create [Let's Encrypt](https://letsencrypt.org/) issued certificates using the [ACME DNS-01 challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge).
+  * With [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/) authentication.
 
 # Usage (on a Ubuntu Desktop or builder environment)
 
