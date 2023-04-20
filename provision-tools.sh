@@ -21,11 +21,11 @@ CHECKPOINT_DISABLE=1 terraform version
 # install azure-cli.
 # NB execute apt-cache madison azure-cli to known the available versions.
 # see https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt&view=azure-cli-latest
-echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
-    | sudo tee /etc/apt/sources.list.d/azure-cli.list
-wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-sudo apt-get update
-sudo apt-get install -y 'azure-cli=2.42.0-*'
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >/etc/apt/keyrings/packages.microsoft.com.gpg
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.com.gpg] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
+  >/etc/apt/sources.list.d/azure-cli.list
+apt-get update
+apt-get install -y 'azure-cli=2.47.0-*'
 az --version
 
 # install kubectl.
