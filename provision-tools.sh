@@ -51,8 +51,8 @@ rm -rf "$t"
 
 # install k9s.
 # see https://github.com/derailed/k9s/releases
-k9s_version='v0.26.7'
-wget -qO- "https://github.com/derailed/k9s/releases/download/$k9s_version/k9s_Linux_x86_64.tar.gz" \
+k9s_version='v0.27.3'
+wget -qO- "https://github.com/derailed/k9s/releases/download/$k9s_version/k9s_Linux_amd64.tar.gz" \
   | tar xzf - k9s
 install -m 755 k9s /usr/local/bin/
 rm k9s
