@@ -2,13 +2,14 @@
 # see https://artifacthub.io/packages/helm/traefik/traefik
 # see https://github.com/traefik/traefik-helm-chart
 # see https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
+# see https://github.com/traefik/traefik
 # see https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release
 resource "helm_release" "traefik" {
   namespace  = "kube-system"
   name       = "traefik"
   repository = "https://helm.traefik.io/traefik"
   chart      = "traefik"
-  version    = "20.3.0" # app version 2.9.4
+  version    = "22.1.0" # app version 2.9.10
   values = [yamlencode({
     # configure the service.
     service = {
