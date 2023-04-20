@@ -31,9 +31,6 @@ resource "kubernetes_service_account_v1" "hello" {
     annotations = {
       "azure.workload.identity/client-id" = azurerm_user_assigned_identity.hello.client_id
     }
-    labels = {
-      "azure.workload.identity/use" = "true"
-    }
   }
 }
 

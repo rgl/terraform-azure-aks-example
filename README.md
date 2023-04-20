@@ -38,20 +38,6 @@ az account set --subscription=<id>
 az account show
 ```
 
-Enable the AKS preview features to be able to use Azure Workload Identity
-authentication:
-
-```bash
-az extension add --name aks-preview
-az extension update --name aks-preview
-# TODO is this enabled subscription wide?
-az feature register \
-  --namespace Microsoft.ContainerService \
-  --name EnableWorkloadIdentityPreview
-az provider register \
-  --namespace Microsoft.ContainerService
-```
-
 Review `main.tf`, especially, the variables:
 
 * `dns_zone`

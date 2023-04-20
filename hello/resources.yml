@@ -130,6 +130,7 @@ spec:
     metadata:
       labels:
         app: hello
+        azure.workload.identity/use: "true"
     spec:
       serviceAccountName: hello
       enableServiceLinks: false
