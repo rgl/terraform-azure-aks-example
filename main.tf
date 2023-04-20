@@ -18,7 +18,7 @@ terraform {
     # see https://registry.terraform.io/providers/hashicorp/azuread
     azuread = {
       source  = "hashicorp/azuread"
-      version = "2.30.0"
+      version = "2.37.2"
     }
     # see https://github.com/terraform-providers/terraform-provider-azurerm
     # see https://registry.terraform.io/providers/hashicorp/azurerm
