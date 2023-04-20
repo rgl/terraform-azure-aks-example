@@ -36,7 +36,7 @@ terraform {
     # see https://registry.terraform.io/providers/hashicorp/helm
     helm = {
       source  = "hashicorp/helm"
-      version = "2.7.1"
+      version = "2.9.0"
     }
     # see https://registry.terraform.io/providers/gavinbunney/kubectl
     # see https://github.com/gavinbunney/terraform-provider-kubectl
