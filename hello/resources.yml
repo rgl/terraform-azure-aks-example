@@ -138,7 +138,8 @@ spec:
         kubernetes.io/os: linux
       containers:
         - name: hello
-          image: ruilopes/kubernetes-hello:v0.0.0.202211181718-test
+          # see https://github.com/rgl/kubernetes-hello
+          image: ruilopes/kubernetes-hello:v0.0.0.202304201005-test
           ports:
             - name: http
               containerPort: 8000
