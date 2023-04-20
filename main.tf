@@ -6,7 +6,7 @@ terraform {
     # see https://registry.terraform.io/providers/hashicorp/random
     random = {
       source  = "hashicorp/random"
-      version = "3.4.3"
+      version = "3.5.1"
     }
     # see https://github.com/hashicorp/terraform-provider-time
     # see https://registry.terraform.io/providers/hashicorp/time
