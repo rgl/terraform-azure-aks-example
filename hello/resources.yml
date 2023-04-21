@@ -1,6 +1,6 @@
 ---
 # see https://kubernetes.io/docs/reference/access-authn-authz/rbac/
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#role-v1-rbac-authorization-k8s-io
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#role-v1-rbac-authorization-k8s-io
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -11,7 +11,7 @@ rules:
     verbs: ["get", "list"]
 ---
 # see https://kubernetes.io/docs/reference/access-authn-authz/rbac/
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#rolebinding-v1-rbac-authorization-k8s-io
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#rolebinding-v1-rbac-authorization-k8s-io
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -42,7 +42,7 @@ spec:
     name: ingress
 ---
 # see https://kubernetes.io/docs/concepts/services-networking/ingress/
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#ingress-v1-networking-k8s-io
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#ingress-v1-networking-k8s-io
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -63,7 +63,7 @@ spec:
                   name: http
 ---
 # see https://kubernetes.io/docs/concepts/services-networking/service/
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#service-v1-core
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#service-v1-core
 # see https://github.com/kubernetes-sigs/external-dns/blob/v0.12.2/docs/initial-design.md
 # see https://github.com/kubernetes-sigs/external-dns/blob/v0.12.2/docs/ttl.md
 apiVersion: v1
@@ -81,7 +81,7 @@ spec:
       targetPort: http
 ---
 # see https://kubernetes.io/docs/concepts/configuration/secret/
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#secret-v1-core
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#secret-v1-core
 apiVersion: v1
 kind: Secret
 type: Opaque
@@ -92,7 +92,7 @@ stringData:
   password: Open Sesame
 ---
 # see https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#configmap-v1-core
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#configmap-v1-core
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -115,9 +115,9 @@ data:
 ---
 # see https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
 # see https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#daemonset-v1-apps
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#podtemplatespec-v1-core
-# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#container-v1-core
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#daemonset-v1-apps
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#podtemplatespec-v1-core
+# see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:

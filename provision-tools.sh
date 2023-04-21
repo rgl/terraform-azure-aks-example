@@ -33,7 +33,7 @@ az --version
 # NB even thou we are on ubuntu jammy (22.04) we are using the xenial packages
 #    because they are the only available packages and are compatible with bionic.
 # see https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-using-native-package-management
-kubectl_version='1.25.6-*' # you should use the same version as the one used in your aks cluster.
+kubectl_version='1.26.3-*' # you should use the same version as the one used in your aks cluster.
 wget -qO /etc/apt/keyrings/packages.cloud.google.com.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
 echo "deb [signed-by=/etc/apt/keyrings/packages.cloud.google.com.gpg] http://apt.kubernetes.io/ kubernetes-xenial main" \
   >/etc/apt/sources.list.d/kubernetes.list

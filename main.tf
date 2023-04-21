@@ -150,7 +150,7 @@ variable "admin_ssh_key_data" {}
 # see az aks get-versions -l northeurope
 # see https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions
 variable "k8s_version" {
-  default = "1.25.6"
+  default = "1.26.3"
 }
 
 output "dns_zone" {
