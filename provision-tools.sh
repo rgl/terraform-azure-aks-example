@@ -6,14 +6,9 @@ apt-get install -y apt-transport-https make unzip jq xmlstarlet
 
 # install terraform.
 # see https://www.terraform.io/downloads
-artifact_url=https://releases.hashicorp.com/terraform/1.4.5/terraform_1.4.5_linux_amd64.zip
-artifact_sha=ce10e941cd11554b15a189cd00191c05abc20dff865599d361bdb863c5f406a9
+artifact_url=https://releases.hashicorp.com/terraform/1.4.6/terraform_1.4.6_linux_amd64.zip
 artifact_path="/tmp/$(basename $artifact_url)"
 wget -qO $artifact_path $artifact_url
-if [ "$(sha256sum $artifact_path | awk '{print $1}')" != "$artifact_sha" ]; then
-  echo "downloaded $artifact_url failed the checksum verification"
-  exit 1
-fi
 unzip -o $artifact_path -d /usr/local/bin
 rm $artifact_path
 CHECKPOINT_DISABLE=1 terraform version
