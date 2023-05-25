@@ -7,5 +7,5 @@ resource "helm_release" "kubernetes_dashboard" {
   name       = "kubernetes-dashboard"
   repository = "https://kubernetes.github.io/dashboard"
   chart      = "kubernetes-dashboard"
-  version    = "6.0.7" # app version 2.7.0
+  version    = "6.0.8" # app version 2.7.0
 }
