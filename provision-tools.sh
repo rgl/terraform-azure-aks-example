@@ -20,7 +20,7 @@ wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >/et
 echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.com.gpg] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
   >/etc/apt/sources.list.d/azure-cli.list
 apt-get update
-apt-get install -y 'azure-cli=2.47.0-*'
+apt-get install -y 'azure-cli=2.49.0-*'
 az --version
 
 # install kubectl.
