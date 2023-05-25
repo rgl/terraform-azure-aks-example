@@ -9,7 +9,7 @@ resource "helm_release" "traefik" {
   name       = "traefik"
   repository = "https://helm.traefik.io/traefik"
   chart      = "traefik"
-  version    = "22.1.0" # app version 2.9.10
+  version    = "23.0.1" # app version 2.10.1
   values = [yamlencode({
     # configure the service.
     service = {
