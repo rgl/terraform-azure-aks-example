@@ -38,7 +38,7 @@ kubectl version --client --output yaml
 
 # download and install.
 # see https://github.com/helm/helm/releases
-helm_version='3.11.3'
+helm_version='3.12.0'
 helm_url="https://get.helm.sh/helm-v$helm_version-linux-amd64.tar.gz"
 t="$(mktemp -q -d --suffix=.helm)"
 wget -qO- "$helm_url" | tar xzf - -C "$t" --strip-components=1 linux-amd64/helm
