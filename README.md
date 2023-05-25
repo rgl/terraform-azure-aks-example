@@ -89,24 +89,24 @@ dig ns $dns_zone "@$dns_zone_name_server" # verify with azure dns.
 dig ns $dns_zone                # verify with your local resolver.
 ```
 
-Show the `cert-manager` application and role assignments:
+Show the `external-dns` application and role assignments:
 
 **NB** Only the single `DNS Zone Contributor` assignment is expected.
 
 ```bash
-cert_manager_application_id="$(
+external_dns_application_id="$(
   terraform show -json \
     | jq \
         -r \
         '.values.root_module.resources[]
-          | select(.address == "azuread_application.cert_manager")
+          | select(.address == "azuread_application.external_dns")
           | .values.application_id'
 )"
 az ad sp show \
-  --id "$cert_manager_application_id"
+  --id "$external_dns_application_id"
 az role assignment list \
   --all \
-  --assignee "$cert_manager_application_id"
+  --assignee "$external_dns_application_id"
 ```
 
 See some information about the cluster:
