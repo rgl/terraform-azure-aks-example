@@ -30,7 +30,7 @@ terraform {
     # see https://registry.terraform.io/providers/hashicorp/kubernetes
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.19.0"
+      version = "2.20.0"
     }
     # see https://github.com/terraform-providers/terraform-provider-helm
     # see https://registry.terraform.io/providers/hashicorp/helm
