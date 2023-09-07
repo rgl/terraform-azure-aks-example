@@ -144,10 +144,6 @@ variable "admin_username" {
   default = "rgl"
 }
 
-variable "admin_password" {
-  default = "HeyH0Password"
-}
-
 # NB when you run make terraform-apply this is set from the
 #    TF_VAR_admin_ssh_key_data environment variable, which
 #    comes from the ~/.ssh/id_rsa.pub file.
