@@ -89,12 +89,14 @@ data "azurerm_client_config" "current" {
 # NB you can test the relative speed from you browser to a location using https://azurespeedtest.azurewebsites.net/
 # get the available locations with: az account list-locations --output table
 variable "location" {
+  type    = string
   default = "northeurope"
 }
 
 # NB this name must be unique within the Azure subscription.
 #    all the other names must be unique within this resource group.
 variable "resource_group_name" {
+  type    = string
   default = "rgl-aks-example"
 }
 
@@ -107,6 +109,7 @@ variable "tags" {
 }
 
 variable "dns_zone" {
+  type    = string
   default = "example.com"
 }
 
@@ -114,6 +117,7 @@ variable "dns_zone" {
 #    certificates and issues related to your account.
 # see https://letsencrypt.org/docs/expiration-emails/
 variable "letsencrypt_email" {
+  type    = string
   default = "john.doe@example.com"
 }
 
@@ -126,6 +130,7 @@ variable "letsencrypt_email" {
 # see https://letsencrypt.org/docs/rate-limits/
 # see https://letsencrypt.org/docs/duplicate-certificate-limit/
 variable "letsencrypt_server" {
+  type        = string
   default     = "https://acme-staging-v02.api.letsencrypt.org/directory"
   description = "The Let's Encrypt server to use"
   validation {
@@ -135,6 +140,7 @@ variable "letsencrypt_server" {
 }
 
 variable "admin_username" {
+  type    = string
   default = "rgl"
 }
 
@@ -145,11 +151,15 @@ variable "admin_password" {
 # NB when you run make terraform-apply this is set from the
 #    TF_VAR_admin_ssh_key_data environment variable, which
 #    comes from the ~/.ssh/id_rsa.pub file.
-variable "admin_ssh_key_data" {}
+variable "admin_ssh_key_data" {
+  type      = string
+  sensitive = true
+}
 
 # see az aks get-versions -l northeurope
 # see https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions
 variable "k8s_version" {
+  type    = string
   default = "1.26.6"
 }
 
