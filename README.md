@@ -1,4 +1,8 @@
-an example azure kubernetes cluster using aks
+# About
+
+[![Lint](https://github.com/rgl/terraform-azure-aks-example/actions/workflows/lint.yml/badge.svg)](https://github.com/rgl/terraform-azure-aks-example/actions/workflows/lint.yml)
+
+This is an example Azure Kubernetes cluster hosted in AKS deployed using Terraform.
 
 This will use [terraform](https://www.terraform.io/) to:
 
