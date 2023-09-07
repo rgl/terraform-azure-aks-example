@@ -1,6 +1,6 @@
 # see https://github.com/hashicorp/terraform
 terraform {
-  required_version = "1.4.6"
+  required_version = "1.5.6"
   required_providers {
     # see https://github.com/hashicorp/terraform-provider-random
     # see https://registry.terraform.io/providers/hashicorp/random
@@ -18,25 +18,25 @@ terraform {
     # see https://registry.terraform.io/providers/hashicorp/azuread
     azuread = {
       source  = "hashicorp/azuread"
-      version = "2.39.0"
+      version = "2.41.0"
     }
     # see https://github.com/terraform-providers/terraform-provider-azurerm
     # see https://registry.terraform.io/providers/hashicorp/azurerm
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.57.0"
+      version = "3.71.0"
     }
     # see https://github.com/terraform-providers/terraform-provider-kubernetes
     # see https://registry.terraform.io/providers/hashicorp/kubernetes
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.20.0"
+      version = "2.21.0"
     }
     # see https://github.com/terraform-providers/terraform-provider-helm
     # see https://registry.terraform.io/providers/hashicorp/helm
     helm = {
       source  = "hashicorp/helm"
-      version = "2.9.0"
+      version = "2.11.0"
     }
     # see https://registry.terraform.io/providers/gavinbunney/kubectl
     # see https://github.com/gavinbunney/terraform-provider-kubectl
@@ -150,7 +150,7 @@ variable "admin_ssh_key_data" {}
 # see az aks get-versions -l northeurope
 # see https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions
 variable "k8s_version" {
-  default = "1.26.3"
+  default = "1.26.6"
 }
 
 output "dns_zone" {

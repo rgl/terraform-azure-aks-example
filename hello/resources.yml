@@ -140,7 +140,7 @@ spec:
       containers:
         - name: hello
           # see https://github.com/rgl/kubernetes-hello
-          image: ruilopes/kubernetes-hello:v0.0.0.202304201005-test
+          image: ruilopes/kubernetes-hello:v0.0.0.202309070803-test
           ports:
             - name: http
               containerPort: 8000
