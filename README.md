@@ -109,8 +109,8 @@ In case you need to troubleshoot, you can use:
 
 ```bash
 kubectl events --all-namespaces --watch
-kubectl events -n kube-system deployment/external-dns --watch
-kubectl logs -n kube-system deployment/external-dns --follow
+kubectl events -n external-dns deployment/external-dns --watch
+kubectl logs -n external-dns deployment/external-dns --follow
 ```
 
 List the installed helm releases:
@@ -124,10 +124,10 @@ Show a helm release status, the user supplied values, and the chart managed
 kubernetes resources:
 
 ```bash
-helm status -n kube-system external-dns
-helm get values -n kube-system external-dns
-helm get values -n kube-system external-dns --all
-helm get manifest -n kube-system external-dns
+helm status -n external-dns external-dns
+helm get values -n external-dns external-dns
+helm get values -n external-dns external-dns --all
+helm get manifest -n external-dns external-dns
 ```
 
 Deploy the example `hello` workload:

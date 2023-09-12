@@ -1,5 +1,5 @@
 locals {
-  external_dns_namespace            = "kube-system"
+  external_dns_namespace            = "external-dns"
   external_dns_service_account_name = "external-dns"
 }
 
@@ -31,11 +31,19 @@ resource "azurerm_role_assignment" "external_dns" {
   role_definition_name = "DNS Zone Contributor"
 }
 
+# see https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace
+resource "kubernetes_namespace" "external_dns" {
+  metadata {
+    name = local.external_dns_namespace
+  }
+}
+
 # install external-dns.
 # see https://artifacthub.io/packages/helm/bitnami/external-dns
 # see https://github.com/bitnami/charts/tree/main/bitnami/external-dns
 # see https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/azure.md
 # see https://github.com/kubernetes-sigs/external-dns/blob/master/docs/initial-design.md
+# see https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release
 resource "helm_release" "external_dns" {
   namespace  = local.external_dns_namespace
   name       = "external-dns"
