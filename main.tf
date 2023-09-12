@@ -1,6 +1,6 @@
 # see https://github.com/hashicorp/terraform
 terraform {
-  required_version = "1.5.6"
+  required_version = "1.5.7"
   required_providers {
     # see https://github.com/hashicorp/terraform-provider-random
     # see https://registry.terraform.io/providers/hashicorp/random
@@ -24,13 +24,13 @@ terraform {
     # see https://registry.terraform.io/providers/hashicorp/azurerm
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.71.0"
+      version = "3.72.0"
     }
     # see https://github.com/terraform-providers/terraform-provider-kubernetes
     # see https://registry.terraform.io/providers/hashicorp/kubernetes
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.21.0"
+      version = "2.23.0"
     }
     # see https://github.com/terraform-providers/terraform-provider-helm
     # see https://registry.terraform.io/providers/hashicorp/helm

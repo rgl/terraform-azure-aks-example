@@ -6,7 +6,7 @@ apt-get install -y apt-transport-https make unzip jq xmlstarlet
 
 # install terraform.
 # see https://www.terraform.io/downloads
-artifact_url=https://releases.hashicorp.com/terraform/1.5.6/terraform_1.5.6_linux_amd64.zip
+artifact_url=https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip
 artifact_path="/tmp/$(basename $artifact_url)"
 wget -qO $artifact_path $artifact_url
 unzip -o $artifact_path -d /usr/local/bin
