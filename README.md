@@ -11,6 +11,7 @@ This will use [terraform](https://www.terraform.io/) to:
 * Create a public [Azure DNS Zone](https://learn.microsoft.com/en-us/azure/dns/dns-overview).
 * Use [Traefik](https://traefik.io/) as the Ingress Controller.
 * Use [external-dns](https://github.com/kubernetes-sigs/external-dns) to create the Ingress DNS Resource Records in the Azure DNS Zone.
+  * With [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/) authentication.
 * Use [cert-manager](https://github.com/cert-manager/cert-manager) to create [Let's Encrypt](https://letsencrypt.org/) issued certificates using the [ACME DNS-01 challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge).
   * With [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/) authentication.
 
@@ -93,26 +94,6 @@ dig ns $dns_zone "@$dns_zone_name_server" # verify with azure dns.
 dig ns $dns_zone                # verify with your local resolver.
 ```
 
-Show the `external-dns` application and role assignments:
-
-**NB** Only the single `DNS Zone Contributor` assignment is expected.
-
-```bash
-external_dns_application_id="$(
-  terraform show -json \
-    | jq \
-        -r \
-        '.values.root_module.resources[]
-          | select(.address == "azuread_application.external_dns")
-          | .values.application_id'
-)"
-az ad sp show \
-  --id "$external_dns_application_id"
-az role assignment list \
-  --all \
-  --assignee "$external_dns_application_id"
-```
-
 See some information about the cluster:
 
 ```bash
@@ -124,11 +105,29 @@ kubectl get pvc --all-namespaces
 kubectl get storageclass
 ```
 
+In case you need to troubleshoot, you can use:
+
+```bash
+kubectl events --all-namespaces --watch
+kubectl events -n kube-system deployment/external-dns --watch
+kubectl logs -n kube-system deployment/external-dns --follow
+```
+
 List the installed helm releases:
 
 ```bash
 export KUBECONFIG=$PWD/shared/kube.conf
 helm list --all-namespaces
+```
+
+Show a helm release status, the user supplied values, and the chart managed
+kubernetes resources:
+
+```bash
+helm status -n kube-system external-dns
+helm get values -n kube-system external-dns
+helm get values -n kube-system external-dns --all
+helm get manifest -n kube-system external-dns
 ```
 
 Deploy the example `hello` workload:
