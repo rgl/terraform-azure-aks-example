@@ -14,6 +14,9 @@ This will use [terraform](https://www.terraform.io/) to:
   * With [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/) authentication.
 * Use [cert-manager](https://github.com/cert-manager/cert-manager) to create [Let's Encrypt](https://letsencrypt.org/) issued certificates using the [ACME DNS-01 challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge).
   * With [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/) authentication.
+* Create the [hello example application](hello/resources.yml) that shows how to:
+  * Expose an ingress HTTPS endpoint using a cert-manager managed certificate.
+  * Use the [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/) authentication to access an Azure DNS Zone.
 
 # Usage (on a Ubuntu Desktop or builder environment)
 
