@@ -56,7 +56,7 @@ k9s version
 
 # install cmctl.
 # see https://github.com/cert-manager/cert-manager/releases
-cmctl_version='v1.12.4'
+cmctl_version='v1.13.1'
 wget -qO- "https://github.com/cert-manager/cert-manager/releases/download/$cmctl_version/cmctl-linux-amd64.tar.gz" \
   | tar xzf - cmctl
 install -m 755 cmctl /usr/local/bin/

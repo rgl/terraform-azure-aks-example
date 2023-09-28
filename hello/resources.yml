@@ -64,8 +64,8 @@ spec:
 ---
 # see https://kubernetes.io/docs/concepts/services-networking/service/
 # see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#service-v1-core
-# see https://github.com/kubernetes-sigs/external-dns/blob/v0.12.2/docs/initial-design.md
-# see https://github.com/kubernetes-sigs/external-dns/blob/v0.12.2/docs/ttl.md
+# see https://github.com/kubernetes-sigs/external-dns/blob/v0.13.6/docs/initial-design.md
+# see https://github.com/kubernetes-sigs/external-dns/blob/v0.13.6/docs/ttl.md
 apiVersion: v1
 kind: Service
 metadata:
