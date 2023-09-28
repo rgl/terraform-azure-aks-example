@@ -9,7 +9,7 @@ This will use [terraform](https://www.terraform.io/) to:
 * Create an [Azure Kubernetes Service (AKS)](https://learn.microsoft.com/en-us/azure/aks/) Kubernetes instance.
   * With [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/) authentication.
 * Create a public [Azure DNS Zone](https://learn.microsoft.com/en-us/azure/dns/dns-overview).
-* Use [Traefik](https://traefik.io/) as the Ingress Controller.
+* Use [nginx](https://github.com/kubernetes/ingress-nginx) as the Ingress Controller.
 * Use [external-dns](https://github.com/kubernetes-sigs/external-dns) to create the Ingress DNS Resource Records in the Azure DNS Zone.
   * With [Azure Workload Identity](https://azure.github.io/azure-workload-identity/docs/) authentication.
 * Use [cert-manager](https://github.com/cert-manager/cert-manager) to create [Let's Encrypt](https://letsencrypt.org/) issued certificates using the [ACME DNS-01 challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge).
@@ -169,11 +169,11 @@ When you are done with the `hello` example, destroy it:
 ./hello/destroy.sh
 ```
 
-Try recreating the `traefik` helm release:
+Try recreating the `ingress-nginx` helm release:
 
 ```bash
 export KUBECONFIG=$PWD/shared/kube.conf
-helm uninstall traefik --namespace kube-system --wait # delete.
+helm uninstall ingress-nginx --namespace kube-system --wait # delete.
 make terraform-apply                   # create with terraform.
 ```
 
