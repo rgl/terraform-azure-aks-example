@@ -9,7 +9,7 @@ resource "helm_release" "traefik" {
   name       = "traefik"
   repository = "https://helm.traefik.io/traefik"
   chart      = "traefik"
-  version    = "24.0.0" # app version 2.10.4
+  version    = "26.0.0" # app version 2.10.6
   values = [yamlencode({
     # configure the service.
     service = {
@@ -18,7 +18,9 @@ resource "helm_release" "traefik" {
     # configure the ports.
     ports = {
       web = {
-        redirectTo = "websecure"
+        redirectTo = {
+          port = "websecure"
+        }
       }
       websecure = {
         tls = {

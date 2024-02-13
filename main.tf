@@ -1,42 +1,42 @@
 # see https://github.com/hashicorp/terraform
 terraform {
-  required_version = "1.5.7"
+  required_version = "1.7.3"
   required_providers {
     # see https://github.com/hashicorp/terraform-provider-random
     # see https://registry.terraform.io/providers/hashicorp/random
     random = {
       source  = "hashicorp/random"
-      version = "3.5.1"
+      version = "3.6.0"
     }
     # see https://github.com/hashicorp/terraform-provider-time
     # see https://registry.terraform.io/providers/hashicorp/time
     time = {
       source  = "hashicorp/time"
-      version = "0.9.1"
+      version = "0.10.0"
     }
     # see https://github.com/terraform-providers/terraform-provider-azuread
     # see https://registry.terraform.io/providers/hashicorp/azuread
     azuread = {
       source  = "hashicorp/azuread"
-      version = "2.43.0"
+      version = "2.47.0"
     }
     # see https://github.com/terraform-providers/terraform-provider-azurerm
     # see https://registry.terraform.io/providers/hashicorp/azurerm
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.72.0"
+      version = "3.91.0"
     }
     # see https://github.com/terraform-providers/terraform-provider-kubernetes
     # see https://registry.terraform.io/providers/hashicorp/kubernetes
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.23.0"
+      version = "2.25.2"
     }
     # see https://github.com/terraform-providers/terraform-provider-helm
     # see https://registry.terraform.io/providers/hashicorp/helm
     helm = {
       source  = "hashicorp/helm"
-      version = "2.11.0"
+      version = "2.12.1"
     }
     # see https://registry.terraform.io/providers/gavinbunney/kubectl
     # see https://github.com/gavinbunney/terraform-provider-kubectl
@@ -153,7 +153,7 @@ variable "admin_ssh_key_data" {
 # see https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions
 variable "k8s_version" {
   type    = string
-  default = "1.26.6"
+  default = "1.27.7"
 }
 
 output "dns_zone" {

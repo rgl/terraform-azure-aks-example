@@ -52,7 +52,7 @@ resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  version    = "1.13.1" # app version 1.13.1
+  version    = "1.14.2" # app version 1.14.2
   values = [yamlencode({
     # NB installCRDs is generally not recommended, BUT since this
     #    is a development cluster we YOLO it.
